@@ -20,6 +20,11 @@ const UserHomePage = () => {
     border: darkMode ? "#1DB954" : "#0096C7",
   };
 
+  const senddata = ()=>{
+   
+
+  }
+
   return (
     <motion.main
       className="w-full p-8"
@@ -63,6 +68,7 @@ const UserHomePage = () => {
               Website URL
             </label>
             <input
+            name="url"
               type="url"
               id="websiteUrl"
               placeholder="https://example.com"
@@ -76,6 +82,7 @@ const UserHomePage = () => {
           </div>
           <div className="mb-4">
             <label
+            name="prompt"
               htmlFor="prompt"
               className="block text-sm font-medium mb-2"
               style={{ color: theme.text }}
