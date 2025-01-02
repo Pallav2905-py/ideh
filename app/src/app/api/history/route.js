@@ -2,11 +2,13 @@ import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import fetch from 'node-fetch';
+import { progress } from 'framer-motion';
 
 const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
+    // console.log("API key",process.env.AI_SERVER_URL);
     // Get the token from cookies
     const token = req.cookies.get('token')?.value;
 
@@ -22,8 +24,8 @@ export async function POST(req) {
     const userId = decoded.id;
 
     // Parse the request body
-    const { url } = await req.json();
-
+    const { websiteUrl, prompt } = await req.json();
+    const url = websiteUrl;
     if (!url) {
       return NextResponse.json(
         { status: 400, error: 'Bad Request: URL is required' },
@@ -32,10 +34,11 @@ export async function POST(req) {
     }
 
     // Fetch response from the external AI service
-    const aiResponse = await fetch(process.env.AI_SERVER_URL, {
+    
+    const aiResponse = await fetch("https://ai-api-peht.onrender.com/process-url", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({ url, prompt }),
     });
 
     if (!aiResponse.ok) {
@@ -94,11 +97,11 @@ export async function GET(req) {
     // Get the ID from the dynamic route (e.g., /api/history/123)
     console.log("Url:", req.nextUrl);
     console.log("Pathname:", req.nextUrl.pathname);
-    
+
     // Extracting id from the pathname
     let id = req.nextUrl.pathname.split('/').pop(); // Assuming the URL is /api/history/[id]
     console.log("Extracted ID:", id);
-    
+
     // Check if the id is a valid number
     let validId = isNaN(id) ? undefined : parseInt(id, 10); // If id is not a number, set it to undefined
     console.log("Validated ID:", validId);
